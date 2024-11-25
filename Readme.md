@@ -13,27 +13,9 @@ A plugin for [Bevy](https://bevyengine.org/) that enables lazy-loading of materi
 
 ## Installation
 
-Add this crate to your `Cargo.toml`:
+cargo add bevy_material_wizard 
 
-```toml
-[dependencies]
-bevy = "0.11"
-your_crate_name = "0.1.0"
-```
 
-Then, add the plugin to your Bevy app:
-
-```rust
-use your_crate_name::MaterialLoaderPlugin;
-use bevy::prelude::*;
-
-fn main() {
-    App::build()
-        .add_plugins(DefaultPlugins)
-        .add_plugin(MaterialLoaderPlugin)
-        .run();
-}
-```
 
 ## Usage
 
