@@ -1,7 +1,7 @@
 [package]
-name = "bevy_material_tool"
-description = "A material replacement workflow for bevy"
-version = "0.14.9" 
+name = "bevy_material_wizard"
+description = "A material replacement utility for bevy"
+version = "0.14.1" 
 edition = "2021"
 authors = [ "ethereumdegen" ]
 license = "MIT"

@@ -37,14 +37,17 @@ impl BuiltMaterialsMap {
 			let material_definition = material_definitions_map.get( material_name )?;
 
 
+			let base_color = material_definition.diffuse_color_tint.unwrap_or(LinearRgba::WHITE);
 
 			let base_color_texture_handle: Option<Handle<Image>> = material_definition.diffuse_texture.as_ref().map(|tex| asset_server.load(tex.to_string())) ;
+ 			let normal_texture_handle: Option<Handle<Image>> = material_definition.normal_texture.as_ref().map(|tex| asset_server.load(tex.to_string())) ;
  
 
 			let loaded_material = StandardMaterial{
-
+				base_color: base_color.into(), 
 				base_color_texture:  base_color_texture_handle ,
-
+				normal_map_texture: normal_texture_handle,
+				perceptual_roughness: material_definition.roughness,
 
 				..default() 
 			};

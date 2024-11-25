@@ -736,8 +736,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "bevy_material_tool"
-version = "0.14.9"
+name = "bevy_material_wizard"
+version = "0.14.1"
 dependencies = [
  "bevy",
  "ron",
