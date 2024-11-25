@@ -3,6 +3,10 @@
 use bevy::{prelude::*, reflect};
 use bevy::utils::HashMap; 
 
+/*
+use the new component in bevy 0.15 
+*/
+
 pub fn material_name_map_plugin(app: &mut App) {
     app 	
 
