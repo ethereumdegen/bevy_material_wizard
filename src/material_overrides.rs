@@ -25,7 +25,8 @@ pub fn material_overrides_plugin(app: &mut App) {
     	 
     	.add_systems(
     		OnEnter(MaterialOverridesLoadingState::Extracting),
-    	      load_material_overrides)
+    	      load_material_overrides
+    	      )
 
      	
      	 .add_systems(OnEnter(MaterialOverridesLoadingState::Building), 

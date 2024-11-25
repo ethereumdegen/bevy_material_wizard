@@ -1,10 +1,47 @@
-use crate::materials_config::MaterialTypesConfig;
+
+use crate::material_definition::load_material_definitions;
+use crate::material_definition::MaterialDefinitionsLoadResource;
+use crate::material_definition::MaterialDefinitionsMap;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
-use material_overrides::BuiltMaterialsResource;
+//use material_overrides::BuiltMaterialsResource;
+//use crate::materials_config::MaterialTypesConfig;
 
-use crate::material_overrides::MaterialOverridesResource;
+//use crate::material_overrides::MaterialOverridesResource;
 
+
+pub mod material_definition;
+pub mod built_materials;
+
+
+
+pub struct BevyMaterialToolPlugin {     
+    pub material_defs_folder_path: String,
+}
+ 
+impl Plugin for BevyMaterialToolPlugin {
+    fn build(&self, app: &mut App) {
+
+        let material_defs_folder_path = &self.material_defs_folder_path;
+
+         app
+         .insert_resource(
+            MaterialDefinitionsMap::default()
+            )
+
+         .insert_resource(
+            MaterialDefinitionsLoadResource {
+                material_defs_folder_path: material_defs_folder_path.clone(),
+
+            }  )
+
+         .add_systems(Startup, load_material_definitions)
+         ;
+
+    }
+}
+
+/*
 pub mod material_overrides;
 pub mod material_replacements; 
 
@@ -57,4 +94,4 @@ impl Plugin for BevyMaterialToolPlugin {
 
 
 	}
-} 
+} */

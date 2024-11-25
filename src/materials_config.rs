@@ -10,11 +10,11 @@ use serde::Deserialize;
 use serde::Serialize;
 
 #[derive(  Resource, Deserialize, Serialize, Clone)]
-pub struct MaterialTypesConfig {
+pub struct MaterialDefinitionsMap {
     
-    pub material_types: HashMap<String, MaterialTypeConfig>,
+    pub material_definitions: HashMap<String, MaterialDefinition>,
 
-    pub material_replacement_sets: Option< HashMap < String,  HashMap<  String, String   > >  >
+   // pub material_replacement_sets: Option< HashMap < String,  HashMap<  String, String   > >  >
     
    
 }
@@ -22,10 +22,9 @@ pub struct MaterialTypesConfig {
 
 
 #[derive(  Deserialize, Serialize, Clone)]
-pub struct MaterialTypeConfig {
+pub struct MaterialDefinition {
     
-   //pub name: String,
- 
+   
    pub material_name: String , 
    pub uv_scale_factor: f32, 
    pub diffuse_color_tint: Option<LinearRgba>, 
