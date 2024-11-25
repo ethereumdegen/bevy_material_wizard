@@ -37,28 +37,10 @@ MaterialDefinition(
 
 ### Loading Materials
 
-The `BuiltMaterialsMap` resource provides a method to load or retrieve materials dynamically:
+This plugin will automatically load all material definition ron files in the folder you specify as you initialize the plugin.
 
-```rust
-fn setup(
-    mut commands: Commands,
-    mut built_materials: ResMut<BuiltMaterialsMap>,
-    material_definitions: Res<HashMap<String, MaterialDefinition>>,
-    asset_server: Res<AssetServer>,
-    mut material_assets: ResMut<Assets<StandardMaterial>>,
-) {
-    let material_name = "example_material".to_string();
+It will only load the textures on demand to more efficiently use resources. p
 
-    if let Some(material_handle) = built_materials.find_or_load_material(
-        &material_name,
-        &material_definitions,
-        &mut asset_server,
-        &mut material_assets,
-    ) {
-        println!("Material loaded: {:?}", material_handle);
-    }
-}
-```
 
 ### Overriding GLTF Materials
 
