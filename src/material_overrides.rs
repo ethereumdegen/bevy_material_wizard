@@ -76,7 +76,7 @@ fn handle_material_overrides(
 	children_query: Query<&Children>,
 
 	 
-	 mut materials: ResMut<Assets<StandardMaterial>>,
+	// mut materials: ResMut<Assets<StandardMaterial>>,
 
 	 mesh_query: Query<&Handle<Mesh>>,
 
@@ -140,7 +140,7 @@ fn handle_material_overrides(
 
              		  }else {
 
-             		  	  let warning_material = materials.add(Color::srgb(1.0, 0.0, 0.0)) ;
+             		  	  let warning_material = material_assets.add(Color::srgb(1.0, 0.0, 0.0)) ;
  
 				             info!("inserted warning_material");
 				          

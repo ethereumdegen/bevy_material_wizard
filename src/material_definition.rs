@@ -35,6 +35,7 @@ pub struct MaterialDefinition {
    pub diffuse_color_tint: Option<LinearRgba>, 
 
 
+
    //pub shader_type: Option<MaterialShaderType>
     
    

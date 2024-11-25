@@ -4,6 +4,7 @@ use crate::material_definition::MaterialDefinitionsLoadResource;
 use crate::material_definition::MaterialDefinitionsMap;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
+use built_materials::BuiltMaterialsMap;
 //use material_overrides::BuiltMaterialsResource;
  
 
@@ -14,11 +15,11 @@ pub mod gltf_models;
 
 
 
-pub struct BevyMaterialToolPlugin {     
+pub struct BevyMaterialWizardPlugin {     
     pub material_defs_folder_path: String,
 }
  
-impl Plugin for BevyMaterialToolPlugin {
+impl Plugin for BevyMaterialWizardPlugin {
     fn build(&self, app: &mut App) {
 
         let material_defs_folder_path = &self.material_defs_folder_path;
@@ -26,6 +27,9 @@ impl Plugin for BevyMaterialToolPlugin {
          app
          .insert_resource(
             MaterialDefinitionsMap::default()
+            )
+         .insert_resource(
+            BuiltMaterialsMap::default()
             )
 
          .insert_resource(

@@ -1,4 +1,5 @@
 
+use bevy::math::Affine2;
 use bevy::prelude::*;
 
 use bevy::utils::HashMap;
@@ -36,6 +37,9 @@ impl BuiltMaterialsMap {
 
 			let material_definition = material_definitions_map.get( material_name )?;
 
+			  let uv_scale = material_definition.uv_scale_factor; 
+
+
 
 			let base_color = material_definition.diffuse_color_tint.unwrap_or(LinearRgba::WHITE);
 
@@ -48,6 +52,8 @@ impl BuiltMaterialsMap {
 				base_color_texture:  base_color_texture_handle ,
 				normal_map_texture: normal_texture_handle,
 				perceptual_roughness: material_definition.roughness,
+
+				uv_transform: Affine2::from_scale(Vec2::splat(uv_scale)) ,
 
 				..default() 
 			};
