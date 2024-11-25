@@ -1,12 +1,12 @@
 
-use bevy::math::Affine2;
+use bevy::{math::Affine2, render::texture::ImageSamplerDescriptor};
 use bevy::prelude::*;
 
 use bevy::utils::HashMap;
 
 use crate::material_definition::MaterialDefinition;
 
-
+use  bevy::render::texture::{ImageAddressMode, ImageLoaderSettings, ImageSampler}; 
 
 
 #[derive(  Resource,   Clone, Default )]
@@ -43,8 +43,32 @@ impl BuiltMaterialsMap {
 
 			let base_color = material_definition.diffuse_color_tint.unwrap_or(LinearRgba::WHITE);
 
-			let base_color_texture_handle: Option<Handle<Image>> = material_definition.diffuse_texture.as_ref().map(|tex| asset_server.load(tex.to_string())) ;
- 			let normal_texture_handle: Option<Handle<Image>> = material_definition.normal_texture.as_ref().map(|tex| asset_server.load(tex.to_string())) ;
+			 
+
+			let base_color_texture_handle: Option<Handle<Image>> = material_definition.diffuse_texture.as_ref().map(
+				|tex| asset_server.load_with_settings(
+					tex.to_string(), |s: &mut ImageLoaderSettings| {
+ 						
+				        s.sampler = ImageSampler::Descriptor(ImageSamplerDescriptor{
+				        	address_mode_u:  ImageAddressMode::Repeat,
+				        	address_mode_v:  ImageAddressMode::Repeat,
+				        	address_mode_w:  ImageAddressMode::Repeat,
+
+				        	..default()
+				        })  
+				    })) ;
+
+ 			let normal_texture_handle: Option<Handle<Image>> = material_definition.normal_texture.as_ref().map(
+ 				|tex| asset_server.load_with_settings(
+ 					tex.to_string(), |s: &mut ImageLoaderSettings| {
+			            s.sampler = ImageSampler::Descriptor(ImageSamplerDescriptor{
+				        	address_mode_u:  ImageAddressMode::Repeat,
+				        	address_mode_v:  ImageAddressMode::Repeat,
+				        	address_mode_w:  ImageAddressMode::Repeat,
+
+				        	..default()
+				        })  
+			    })) ;
  
 
 			let loaded_material = StandardMaterial{
@@ -60,6 +84,7 @@ impl BuiltMaterialsMap {
 				alpha_mode, 
 
 				uv_transform: Affine2::from_scale(Vec2::splat(uv_scale)) ,
+				//fix uv stretch ?
 
 				..default() 
 			};
