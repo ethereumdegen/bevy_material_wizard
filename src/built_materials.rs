@@ -54,7 +54,7 @@ impl BuiltMaterialsMap {
 				perceptual_roughness: material_definition.roughness,
 
 				
-
+				metallic: material_definition.metallic.unwrap_or(0.0),
 
 
 				alpha_mode, 

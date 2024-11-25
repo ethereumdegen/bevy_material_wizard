@@ -72,6 +72,7 @@ pub struct MaterialDefinition {
   pub normal_texture: Option<String>,
 
   pub roughness: f32,
+  pub metallic: Option<f32>,
 
   pub  emissive_texture: Option<String> ,
 
