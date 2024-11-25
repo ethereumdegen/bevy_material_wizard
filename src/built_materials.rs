@@ -39,7 +39,7 @@ impl BuiltMaterialsMap {
 
 			  let uv_scale = material_definition.uv_scale_factor; 
 
-
+			  let alpha_mode = material_definition.alpha_mode.to_alpha_mode();
 
 			let base_color = material_definition.diffuse_color_tint.unwrap_or(LinearRgba::WHITE);
 
@@ -52,6 +52,12 @@ impl BuiltMaterialsMap {
 				base_color_texture:  base_color_texture_handle ,
 				normal_map_texture: normal_texture_handle,
 				perceptual_roughness: material_definition.roughness,
+
+				
+
+
+
+				alpha_mode, 
 
 				uv_transform: Affine2::from_scale(Vec2::splat(uv_scale)) ,
 

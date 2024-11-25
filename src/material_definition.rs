@@ -26,6 +26,31 @@ pub struct MaterialDefinitionsLoadResource {
 }
 
 
+
+#[derive(Deserialize, Serialize, Clone, Default )]
+
+pub enum MaterialAlphaMode {
+    #[default] 
+    Opaque,
+    AlphaBlend,
+    AlphaMask(f32),
+
+}
+
+impl MaterialAlphaMode {
+    pub fn to_alpha_mode(&self) -> AlphaMode {
+
+        match self {
+
+            Self::Opaque => AlphaMode::Opaque,
+            Self::AlphaBlend => AlphaMode::Blend,
+            Self::AlphaMask(x) => AlphaMode::Mask(*x)
+        }
+
+    }
+}
+
+
 #[derive(  Deserialize, Serialize, Clone)]
 pub struct MaterialDefinition {
     
@@ -33,6 +58,9 @@ pub struct MaterialDefinition {
    pub material_name: String , 
    pub uv_scale_factor: f32, 
    pub diffuse_color_tint: Option<LinearRgba>, 
+
+   #[serde(default)]
+   pub alpha_mode: MaterialAlphaMode,
 
 
 
