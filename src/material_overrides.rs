@@ -25,7 +25,7 @@ pub fn material_overrides_plugin(app: &mut App) {
     app 	
 
     	
-      
+      	.register_type::<MaterialOverrideComponent>()
 
       
       
@@ -42,7 +42,8 @@ pub fn material_overrides_plugin(app: &mut App) {
 
 
 //attach this to signal that the material is supposed to be replaced 
-#[derive(Component,Debug)]
+#[derive(Component,Debug,Reflect)]
+#[reflect(Component)]
 pub struct MaterialOverrideComponent {
  
 	pub material_override: String
@@ -95,10 +96,9 @@ fn handle_material_overrides(
             
              	let material_name = &mat_override_request.material_override ;
 
- 				let material_definitions_map = &material_definitions_res.material_definitions; //.get(material_name);
+ 				let material_definitions_map = &material_definitions_res.material_definitions;  
 
-
-
+ 
 
              	     let loaded_material = built_materials_resource.find_or_load_material  (
 
@@ -118,7 +118,7 @@ fn handle_material_overrides(
              		  		if   mesh_query.get(mat_override_entity).ok().is_some() {
 	             		 	 		  
 					                  commands.entity(mat_override_entity).try_insert(new_material_handle.clone());
-					                  
+					                  	  info!("inserted new material as override");
                 				  
 	             		 	 	} 
  
@@ -129,9 +129,9 @@ fn handle_material_overrides(
 	 								if   mesh_query.get(child).ok().is_some() {
 
 	             		 	 		
-	             		 	 		   commands.entity(mat_override_entity).try_insert(new_material_handle.clone());
+	             		 	 		   commands.entity(child).try_insert(new_material_handle.clone());
 					                  
- 
+ 									  info!("inserted new material as override");
 
 	             		 	 		} 
 							     
@@ -150,7 +150,7 @@ fn handle_material_overrides(
 					                    .entity(mat_override_entity)
 					                    .try_insert(warning_material.clone()); 
 
-					                  info!("inserted new material as override"); 
+					                  //info!("inserted new material as override"); 
 	             		 	 	}else {
 	             		 	 		// warn!("no existing material to replace "); 
 	             		 	 	}
@@ -165,7 +165,7 @@ fn handle_material_overrides(
 				                    .entity(child)
 				                    .try_insert(warning_material.clone()); 
 
-				                  info!("inserted new material as override");
+				                 // info!("inserted new material as override");
 
 
              		 	 	}else {
