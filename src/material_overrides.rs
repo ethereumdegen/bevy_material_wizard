@@ -4,6 +4,7 @@
 /* use crate::{
 	advanced_materials::foliage_material::FoliageMaterialExtension,
 	 materials_config::MaterialTypesConfig}; */
+use crate::MaterialImageHandlesCache;
 use crate::{built_materials::BuiltMaterialsMap, material_definition::MaterialDefinitionsMap};
  
 use bevy::prelude::*;
@@ -67,22 +68,19 @@ pub struct MaterialOverridesSet;
 
 fn handle_material_overrides(
 	mut commands:Commands, 
-//	mut  scene_instance_evt_reader: EventReader<SceneInstanceReady>,  
-
+ 
 	material_override_query: Query<(Entity, &MaterialOverrideComponent), 
 	Or<( Changed<MaterialOverrideComponent> , Added<RefreshMaterialOverride>) > >,
 
 	 
 	children_query: Query<&Children>,
 
-	 
-	// mut materials: ResMut<Assets<StandardMaterial>>,
-
 	 mesh_query: Query<&Handle<Mesh>>,
 
  	
  	material_definitions_res: Res<MaterialDefinitionsMap>,
  	mut asset_server: ResMut<AssetServer>, 
+ 	mut material_images_cache: ResMut< MaterialImageHandlesCache>,
  	mut material_assets: ResMut<Assets<StandardMaterial>>,
 	mut built_materials_resource: ResMut <BuiltMaterialsMap> ,
 ){
@@ -106,6 +104,7 @@ fn handle_material_overrides(
 
              	     	&material_name,
              	     	material_definitions_map,
+             	     	&mut material_images_cache, 
              	     	&mut asset_server, 
              	     	&mut material_assets
 

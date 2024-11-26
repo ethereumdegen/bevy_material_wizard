@@ -1,4 +1,6 @@
 
+use crate::built_materials::MaterialImageHandlesCache;
+use crate::built_materials::update_image_sampler_settings;
 use crate::material_definition::load_material_definitions;
 use crate::material_definition::MaterialDefinitionsLoadResource;
 use crate::material_definition::MaterialDefinitionsMap;
@@ -26,6 +28,9 @@ impl Plugin for BevyMaterialWizardPlugin {
         let material_defs_folder_path = &self.material_defs_folder_path;
 
          app
+         .insert_resource( 
+            MaterialImageHandlesCache::default()
+            )
          .insert_resource(
             MaterialDefinitionsMap::default()
             )
@@ -40,6 +45,7 @@ impl Plugin for BevyMaterialWizardPlugin {
             }  )
 
          .add_systems(Startup, load_material_definitions)
+         .add_systems(Update, update_image_sampler_settings)
 
          .add_plugins(material_overrides::material_overrides_plugin)
           .add_plugins(gltf_models::gltf_models_plugin)
