@@ -1,5 +1,5 @@
 
-use bevy::{math::Affine2, render::texture::ImageSamplerDescriptor};
+use bevy::{math::Affine2, };
 
 use bevy::utils::HashSet;
 
@@ -9,7 +9,11 @@ use bevy::utils::HashMap;
 
 use crate::material_definition::MaterialDefinition;
 
-use  bevy::render::texture::{ImageAddressMode, ImageFilterMode, ImageLoaderSettings, ImageSampler}; 
+use bevy::image::{ImageSamplerDescriptor, ImageSampler  };
+use bevy::render::render_resource::{
+    AddressMode, FilterMode,
+};
+ 
 
 
 #[derive(  Resource,   Clone, Default )]
@@ -126,12 +130,12 @@ pub fn update_image_sampler_settings(
 					 // Update the sampler settings for the loaded image
                     texture_image.sampler = ImageSampler::Descriptor(ImageSamplerDescriptor {
                         label: None,
-                        address_mode_u: ImageAddressMode::Repeat,
-                        address_mode_v: ImageAddressMode::Repeat,
-                        address_mode_w: ImageAddressMode::Repeat,
-                        mag_filter: ImageFilterMode::Linear,
-                        min_filter: ImageFilterMode::Linear,
-                        mipmap_filter: ImageFilterMode::Linear,
+                        address_mode_u:  AddressMode::Repeat.into(),
+                        address_mode_v:  AddressMode::Repeat.into(),
+                        address_mode_w:  AddressMode::Repeat.into(),
+                        mag_filter: FilterMode::Linear.into(),
+                        min_filter: FilterMode::Linear.into(),
+                        mipmap_filter: FilterMode::Linear.into(),
                         ..default()
                     });
                 }

@@ -31,12 +31,12 @@ pub fn material_overrides_plugin(app: &mut App) {
       
 
        .add_systems(Update, (
-       	handle_material_overrides_when_scene_ready,
+      
        	handle_material_overrides
        	).chain() .in_set(MaterialOverridesSet) )
 
    
-
+        .add_observer(handle_material_overrides_when_scene_ready)
        ;
 }
 
@@ -76,7 +76,7 @@ fn handle_material_overrides(
 	 
 	children_query: Query<&Children>,
 
-	 mesh_query: Query<&Handle<Mesh>>,
+	 mesh_query: Query< &Mesh3d >,
 
  	
  	material_definitions_res: Res<MaterialDefinitionsMap>,
@@ -117,7 +117,7 @@ fn handle_material_overrides(
 
              		  		if   mesh_query.get(mat_override_entity).ok().is_some() {
 	             		 	 		  
-					                  commands.entity(mat_override_entity).try_insert(new_material_handle.clone());
+					                  commands.entity(mat_override_entity).try_insert( MeshMaterial3d( new_material_handle.clone() )) ;
 					                  	  info!("inserted new material as override");
                 				  
 	             		 	 	} 
@@ -129,7 +129,7 @@ fn handle_material_overrides(
 	 								if   mesh_query.get(child).ok().is_some() {
 
 	             		 	 		
-	             		 	 		   commands.entity(child).try_insert(new_material_handle.clone());
+	             		 	 		   commands.entity(child).try_insert( MeshMaterial3d( new_material_handle.clone() ) );
 					                  
  									  info!("inserted new material as override");
 
@@ -145,15 +145,13 @@ fn handle_material_overrides(
 				          
 				          
 
-					        if   mesh_query.get(mat_override_entity).ok().is_some() {
+					          if   mesh_query.get(mat_override_entity).ok().is_some() {
 	             		 	 		 commands
 					                    .entity(mat_override_entity)
-					                    .try_insert(warning_material.clone()); 
+					                    .try_insert( MeshMaterial3d ( warning_material.clone() )) ; 
 
-					                  //info!("inserted new material as override"); 
-	             		 	 	}else {
-	             		 	 		// warn!("no existing material to replace "); 
-	             		 	 	}
+					                  
+	             		 	 	} 
  
 
              		 	 for child in DescendantIter::new(&children_query, mat_override_entity) {
@@ -163,15 +161,11 @@ fn handle_material_overrides(
 
              		 	 		 commands
 				                    .entity(child)
-				                    .try_insert(warning_material.clone()); 
+				                    .try_insert(MeshMaterial3d ( warning_material.clone() )) ; 
 
-				                 // info!("inserted new material as override");
+				                 
 
-
-             		 	 	}else {
-	             		 	 		// warn!("no existing material to replace "); 
-	             		 	 	}
-						     
+             		 	 	} 						     
 						 }
 
 
@@ -188,6 +182,36 @@ fn handle_material_overrides(
 
 
 
+
+
+fn handle_material_overrides_when_scene_ready(
+    scene_instance_evt_trigger: Trigger<SceneInstanceReady>,
+
+    material_override_request_query: Query<&MaterialOverrideWhenSceneReadyComponent>,
+
+    mut commands: Commands,
+
+    parent_query: Query<&Parent>,
+) {
+    let trig_entity = scene_instance_evt_trigger.entity();
+
+    let Some(parent_entity) = parent_query.get(trig_entity).ok().map(|p| p.get()) else {
+        return;
+    };
+
+    // need to check parent !?
+    let Some(mat_override_request) = material_override_request_query.get(parent_entity).ok() else {
+        return;
+    };
+
+    let material_override = mat_override_request.material_override.clone();
+
+    if let Some(mut cmd) = commands.get_entity(trig_entity) {
+        cmd.try_insert(MaterialOverrideComponent { material_override });
+    }
+}
+
+/*
 fn handle_material_overrides_when_scene_ready(
 	mut commands:Commands, 
 	mut  scene_instance_evt_reader: EventReader<SceneInstanceReady>,  
@@ -236,4 +260,4 @@ fn handle_material_overrides_when_scene_ready(
 
       }
 
-}
+}*/
