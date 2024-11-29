@@ -31,7 +31,7 @@ MaterialDefinition(
     normal_texture: Some("textures/normal.png"),
     roughness: 0.8,
     metallic: 0.5,
-    alpha_mode: "Opaque", // or "Blend"
+    alpha_mode: Opaque //or AlphaBlend
 )
 ```
 
@@ -39,7 +39,7 @@ MaterialDefinition(
 
 This plugin will automatically load all material definition ron files in the folder you specify as you initialize the plugin.
 
-It will only load the textures on demand to more efficiently use resources. p
+It will only load the textures on demand to more efficiently use resources.  
 
 
 ### Overriding GLTF Materials
