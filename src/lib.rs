@@ -13,7 +13,7 @@ use built_materials::BuiltMaterialsMap;
 pub mod material_definition;
 pub mod built_materials;
 pub mod material_overrides;
-// pub mod material_replacements;
+pub mod material_replacements;
 pub mod gltf_models;
 
 
@@ -28,6 +28,10 @@ impl Plugin for BevyMaterialWizardPlugin {
         let material_defs_folder_path = &self.material_defs_folder_path;
 
          app
+
+
+         .init_state::<MaterialOverridesLoadingState>()
+         
          .insert_resource( 
             MaterialImageHandlesCache::default()
             )
@@ -48,9 +52,24 @@ impl Plugin for BevyMaterialWizardPlugin {
          .add_systems(Update, update_image_sampler_settings)
 
          .add_plugins(material_overrides::material_overrides_plugin)
-          .add_plugins(gltf_models::gltf_models_plugin)
+          .add_plugins(gltf_models::gltf_models_plugin) // make this optionally separate ? 
  
          ;
 
     }
 } 
+
+
+
+#[derive(Clone,Debug,PartialEq,Eq,Hash,States,Default)]
+pub enum MaterialOverridesLoadingState{
+    #[default]
+   Init,
+   Extracting,
+   Building,
+   Complete
+}
+
+
+ 
+

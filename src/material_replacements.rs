@@ -1,12 +1,15 @@
 
  
 use crate::material_overrides::MaterialOverridesSet;
-use crate::material_name_map::MaterialMetadataName;
-use crate::BuiltMaterialsResource;
+
+
+use bevy::gltf::GltfMaterialName; 
+ 
+ 
 use crate::material_overrides::{MaterialOverrideComponent, RefreshMaterialOverride};
-use crate::materials_config::MaterialShaderType;
-use crate::{advanced_materials::foliage_material::FoliageMaterialExtension, materials_config::MaterialTypesConfig};
-use bevy::math::Affine2;
+//use crate::materials_config::MaterialShaderType;
+//use crate::{advanced_materials::foliage_material::FoliageMaterialExtension, materials_config::MaterialTypesConfig};
+// use bevy::math::Affine2;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
 
@@ -25,8 +28,7 @@ pub fn material_replacements_plugin(app: &mut App) {
     app 	
 
     	
-    	.init_state::<MaterialOverridesLoadingState>()
-    	 
+    	
      
 
 
@@ -41,19 +43,6 @@ pub fn material_replacements_plugin(app: &mut App) {
        ;
 }
 
-
-
-#[derive(Clone,Debug,PartialEq,Eq,Hash,States,Default)]
-pub enum MaterialOverridesLoadingState{
-	#[default]
-   Init,
-   Extracting,
-   Building,
-   Complete
-}
-
-
- 
 
 
 
@@ -103,7 +92,7 @@ fn handle_material_replacements(
 	  
 
 
-	 material_metadata_query: Query<&MaterialMetadataName>,
+	 material_name_query: Query<&GltfMaterialName>,
 
  
 ){
@@ -119,7 +108,7 @@ fn handle_material_replacements(
 
 
 
-	             		 	 	let Some(material_metadata_comp) = material_metadata_query.get(child).ok() else {continue};
+	             		 	 	let Some(material_metadata_comp) = material_name_query.get(child).ok() else {continue};
 
 
   								for (original_mat_name, new_mat_name) in &mat_replacement_request.material_replacements {
@@ -190,45 +179,44 @@ fn handle_material_replacement_sets(
 
 }
 
+
+
 fn handle_material_replacements_when_scene_ready(
-	mut commands:Commands, 
-	mut  scene_instance_evt_reader: EventReader<SceneInstanceReady>,  
+    scene_instance_evt_trigger: Trigger<SceneInstanceReady>,
 
-	material_override_request_query: Query<&MaterialReplacementWhenSceneReadyComponent >,
+    material_override_request_query: Query<&MaterialReplacementWhenSceneReadyComponent>,
 
-	parent_query : Query<&Parent>, 
-	// name_query: Query<&Name>,
-	//children_query: Query<&Children>,
+    mut commands: Commands,
 
-	 
+    parent_query: Query<&Parent>,
+) {
+
+		let trig_entity = scene_instance_evt_trigger.entity();
+
+	    let Some(parent_entity) = parent_query.get(trig_entity).ok().map(|p| p.get()) else {
+	        return;
+	    };
+
+ 	
+	 	 let Some(mat_override_request) = material_override_request_query.get(parent_entity).ok() else {
+	        return;
+	    }; 
+
+
+ 	   let material_replacements = mat_override_request.material_replacements.clone() ;
+
+		if let Some(mut cmd) = commands.get_entity( parent_entity ) {
+
+			cmd.try_insert(  
+				MaterialReplacementComponent {
+					material_replacements 
+				}
+			);
+		}
+
+
+
+          
  
-	 
-){ 
-
-    for evt in scene_instance_evt_reader.read(){
-
-          let parent = evt.parent; //the scene 
-
-          let Some(parent_entity) = parent_query.get(parent).ok().map( |p| p.get() ) else {continue};
-
-          if let Some(mat_override_request) = material_override_request_query.get(parent_entity).ok(){
-    
-             	let material_replacements = mat_override_request.material_replacements.clone() ;
-
- 				if let Some(mut cmd) = commands.get_entity( parent_entity ) {
-
- 					cmd.try_insert(  
- 						MaterialReplacementComponent {
- 							material_replacements 
- 						}
- 					);
- 				}
-
-
-
-          }
-           
-
-      }
 
 }

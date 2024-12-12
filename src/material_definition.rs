@@ -20,7 +20,7 @@ pub struct MaterialDefinitionsMap {
 
 
 
-#[derive(  Resource, Deserialize, Serialize, Clone, Default )]
+#[derive(  Resource, Deserialize, Serialize, Clone  )]
 pub struct MaterialDefinitionsLoadResource {
 	pub material_defs_folder_path: String, 
 }

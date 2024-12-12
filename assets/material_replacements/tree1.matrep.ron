@@ -1,0 +1,15 @@
+(
+
+
+	material_replacements: {
+
+		// gltf material name ->   wizard override material name 
+
+	  "bark" :  "Wood5",
+	   "leaves" :  "LeavesFir"
+
+
+	}
+
+
+)

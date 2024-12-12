@@ -1,5 +1,11 @@
 use bevy::prelude::*;
 
+/*
+An auxilliary gltf model loading plugin --- not really related or coupled 
+
+*/
+
+
 pub fn gltf_models_plugin(app: &mut App) {
     app.add_systems(
         Update,
