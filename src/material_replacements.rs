@@ -4,6 +4,9 @@ use crate::material_overrides::MaterialOverridesSet;
 
 
 use bevy::gltf::GltfMaterialName; 
+
+
+use crate::material_replacements_map::MaterialReplacementsMap ; 
  
  
 use crate::material_overrides::{MaterialOverrideComponent, RefreshMaterialOverride};
@@ -30,11 +33,11 @@ pub fn material_replacements_plugin(app: &mut App) {
     	
     	
      
-
+    	.add_observer( handle_material_replacements_when_scene_ready )
 
        .add_systems(Update, (
        	handle_material_replacement_sets ,
-       	handle_material_replacements_when_scene_ready,
+       
        	handle_material_replacements
        	).chain().before( MaterialOverridesSet ) )
 
@@ -143,7 +146,7 @@ fn handle_material_replacement_sets(
 	mut commands:Commands, 
 	material_override_request_query: Query< (Entity, &MaterialReplacementApplySetWhenSceneReadyComponent ), Added<MaterialReplacementApplySetWhenSceneReadyComponent>  >,
 
-	material_types_config: Res<MaterialTypesConfig> ,
+	material_replacements_config: Res<MaterialReplacementsMap> ,
 
 ) {
 
@@ -154,15 +157,16 @@ fn handle_material_replacement_sets(
 
 
 		let mut material_replacements = None ;
-		if let Some(  material_replacement_sets  ) = &material_types_config.material_replacement_sets {
+		let material_replacement_sets = &material_replacements_config.material_replacement_sets ; 
+		 
 
-			if let Some(matching_set) = material_replacement_sets.get( &mat_replacement_request.0  ){
+		if let Some(matching_set) = material_replacement_sets.get( &mat_replacement_request.0  ){
 
-				material_replacements = Some( matching_set.clone() );
+			material_replacements = Some( matching_set.clone() );
 
-			}
+		}
 
-		} 
+		 
 
 
 		if let Some( material_replacements )=  material_replacements {
