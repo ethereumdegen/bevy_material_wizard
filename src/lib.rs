@@ -65,6 +65,7 @@ impl Plugin for BevyMaterialWizardPlugin {
          .add_systems(Update, update_image_sampler_settings)
 
          .add_plugins(material_overrides::material_overrides_plugin)
+         .add_plugins(material_replacements::material_replacements_plugin)
           .add_plugins(gltf_models::gltf_models_plugin) // make this optionally separate ? 
  
          ;

@@ -118,7 +118,7 @@ fn handle_material_overrides(
              		  		if   mesh_query.get(mat_override_entity).ok().is_some() {
 	             		 	 		  
 					                  commands.entity(mat_override_entity).try_insert( MeshMaterial3d( new_material_handle.clone() )) ;
-					                  	  info!("inserted new material as override");
+					                  	//  info!("inserted new material as override");
                 				  
 	             		 	 	} 
  
@@ -131,7 +131,7 @@ fn handle_material_overrides(
 	             		 	 		
 	             		 	 		   commands.entity(child).try_insert( MeshMaterial3d( new_material_handle.clone() ) );
 					                  
- 									  info!("inserted new material as override");
+ 									//  info!("inserted new material as override");
 
 	             		 	 		} 
 							     
@@ -141,7 +141,7 @@ fn handle_material_overrides(
 
              		  	  let warning_material = material_assets.add(Color::srgb(1.0, 0.0, 0.0)) ;
  
-				             info!("inserted warning_material");
+				             warn!("inserted warning_material");
 				          
 				          
 

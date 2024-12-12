@@ -40,7 +40,7 @@ impl BuiltMaterialsMap {
 
 		if let Some(existing_loaded_mat_handle) = self.built_materials.get( material_name  ) {
 
-				info!("found built material ");
+				// info!("found built material ");
 
 			return Some( existing_loaded_mat_handle.clone() );
 		}else {
@@ -73,7 +73,7 @@ impl BuiltMaterialsMap {
 				material_images_cache.0.insert( normal_texture_handle.id() );
 			}
  
-			info!("create new built material ");
+		  //	info!("create new built material ");
 			let loaded_material = StandardMaterial{
 				base_color: base_color.into(), 
 				base_color_texture:  base_color_texture_handle ,
