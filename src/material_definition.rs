@@ -1,5 +1,6 @@
 
 
+use crate::util::walk_dir;
 use std::io::Read;
 use std::fs::File;
 use bevy::utils::HashMap;
@@ -98,38 +99,34 @@ pub fn load_material_definitions(
 ) {
     let folder_load_path = &material_load_res.material_defs_folder_path;
 
-    // Iterate through all the files in the folder
-    if let Ok(entries) = std::fs::read_dir(folder_load_path) {
-        for entry in entries {
-            if let Ok(entry) = entry {
-                let path = entry.path();
 
-                // Check if the entry is a file
-                if path.is_file() {
-                    if let Some(extension) = path.extension() {
-                        // Check for appropriate file extension (e.g., `.ron`)
-                        if extension == "ron" {
-                            let file_path = path.to_string_lossy().to_string();
+     let mut files_in_folder =  Vec::new();
+
+
+     walk_dir( folder_load_path , "ron" , &mut files_in_folder);
+
+    // Iterate through all the files in the folder
+    //if let Ok(entries) = std::fs::read_dir(folder_load_path) {
+        for file_path in files_in_folder {
+           
+               // let path = entry.path();  
 
                             // Attempt to load the material definition
-                            match MaterialDefinition::load_from_file(&file_path) {
-                                Ok(mat_def) => {
-                                    material_definition_map
-                                        .material_definitions
-                                        .insert(mat_def.material_name.clone(), mat_def);
-                                }
-                                Err(err) => {
-                                    eprintln!("Failed to load material definition from {}: {}", file_path, err);
-                                }
-                            }
-                        }
+                match MaterialDefinition::load_from_file(&file_path) {
+                    Ok(mat_def) => {
+                        info!("loading mat def {}", &file_path );
+                        material_definition_map
+                            .material_definitions
+                            .insert(mat_def.material_name.clone(), mat_def);
                     }
+                    Err(err) => {
+                        eprintln!("Failed to load material definition from {}: {}", file_path, err);
+                    }
+                           
                 }
             }
-        }
-    } else {
-        eprintln!("Failed to read directory: {}", folder_load_path);
-    }
+         
+    
 }
 
 /*
