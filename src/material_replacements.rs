@@ -173,19 +173,22 @@ fn handle_material_replacement_sets(
 			warn!("could not find material replacement set {}", &mat_replacement_request.0 );
 		}*/
 
-		 info!(" handle_material_replacement_sets {} " , &mat_replacement_request.0 );
+		// info!(" handle_material_replacement_sets {} " , &mat_replacement_request.0 );
 
 
 		if let Some( material_replacements ) =  material_replacement_set {
 	 	
 
-	 	 info!(" handle_material_replacement_sets 2 " );
+	 	// info!(" handle_material_replacement_sets 2 " );
 
-			commands.entity(entity).try_insert( 
+			commands.entity(entity).try_insert( (
 				MaterialReplacementWhenSceneReadyComponent {
 					 material_replacements: material_replacements.clone()
+				},
+				MaterialReplacementComponent {
+						 material_replacements: material_replacements.clone()
 				}
-			 );
+			 ));
 
 		}else {
 			panic!("could not find mat rep {}",  &mat_replacement_request.0);
