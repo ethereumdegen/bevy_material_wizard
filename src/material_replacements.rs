@@ -4,6 +4,9 @@ use crate::material_overrides::MaterialOverridesSet;
 
 
 use bevy::gltf::GltfMaterialName; 
+
+
+use crate::material_replacements_map::MaterialReplacementsMap ; 
  
  
 use crate::material_overrides::{MaterialOverrideComponent, RefreshMaterialOverride};
@@ -27,15 +30,16 @@ The materials MUST finish extraction before loading in the models
 pub fn material_replacements_plugin(app: &mut App) {
     app 	
 
-    	
-    	
+    		.register_type::<MaterialReplacementComponent>()
+    			.register_type::<MaterialReplacementWhenSceneReadyComponent>()
+    	.register_type::<MaterialReplacementApplySetWhenSceneReadyComponent>()
      
-
-
+    	.add_observer( handle_material_replacements_when_scene_ready )
+    	.init_resource::< MaterialReplacementsMap >()
        .add_systems(Update, (
-       	handle_material_replacement_sets ,
-       	handle_material_replacements_when_scene_ready,
-       	handle_material_replacements
+       		handle_material_replacement_sets ,
+       
+       		handle_material_replacements
        	).chain().before( MaterialOverridesSet ) )
 
    
@@ -49,7 +53,8 @@ pub fn material_replacements_plugin(app: &mut App) {
 
 
 //attach this to signal that the materials are supposed to be replaced 
-#[derive(Component,Debug)]
+#[derive(Component,Debug,Reflect)]
+#[reflect(Component)]
 pub struct MaterialReplacementComponent {
 
  		//old gltf material name,   new registered material name 
@@ -60,13 +65,15 @@ pub struct MaterialReplacementComponent {
 pub struct RefreshMaterialReplacement ;
 
 
-#[derive(Component,Debug)]
+#[derive(Component,Debug,Reflect)]
+#[reflect(Component)]
 pub struct MaterialReplacementWhenSceneReadyComponent {
  
 	pub material_replacements: HashMap<String,String>
 }
 
-#[derive(Component,Debug)]
+#[derive(Component,Debug,Reflect)]
+#[reflect(Component)]
 pub struct MaterialReplacementApplySetWhenSceneReadyComponent(pub String);
 
 /*
@@ -138,41 +145,53 @@ fn handle_material_replacements(
 
 
 fn handle_material_replacement_sets(
-
-
+ 
 	mut commands:Commands, 
 	material_override_request_query: Query< (Entity, &MaterialReplacementApplySetWhenSceneReadyComponent ), Added<MaterialReplacementApplySetWhenSceneReadyComponent>  >,
 
-	material_types_config: Res<MaterialTypesConfig> ,
+	material_replacements_config: Res<MaterialReplacementsMap> ,
 
 ) {
 
 
 	for (entity, mat_replacement_request) in material_override_request_query.iter() {
 
+ 
 
 
-
-		let mut material_replacements = None ;
-		if let Some(  material_replacement_sets  ) = &material_types_config.material_replacement_sets {
-
-			if let Some(matching_set) = material_replacement_sets.get( &mat_replacement_request.0  ){
-
-				material_replacements = Some( matching_set.clone() );
-
-			}
-
-		} 
+		let material_replacement_sets = &material_replacements_config.material_replacement_sets ; 
 
 
-		if let Some( material_replacements )=  material_replacements {
-	 
-			commands.entity(entity).try_insert( 
+        let material_replacement_set =  material_replacement_sets.get( &mat_replacement_request.0  ) ;
+
+		/*if let Some(matching_set) = material_replacement_sets.get( &mat_replacement_request.0  ){
+
+			material_replacements = Some( matching_set.clone() );
+
+		}else {
+
+			warn!("could not find material replacement set {}", &mat_replacement_request.0 );
+		}*/
+
+		// info!(" handle_material_replacement_sets {} " , &mat_replacement_request.0 );
+
+
+		if let Some( material_replacements ) =  material_replacement_set {
+	 	
+
+	 	// info!(" handle_material_replacement_sets 2 " );
+
+			commands.entity(entity).try_insert( (
 				MaterialReplacementWhenSceneReadyComponent {
-					material_replacements
+					 material_replacements: material_replacements.clone()
+				},
+				MaterialReplacementComponent {
+						 material_replacements: material_replacements.clone()
 				}
-			 );
+			 ));
 
+		}else {
+			panic!("could not find mat rep {}",  &mat_replacement_request.0);
 		}
 
 	}
