@@ -83,6 +83,7 @@ impl BuiltMaterialsMap {
 				
 				metallic: material_definition.metallic.unwrap_or(0.0),
 
+				cull_mode: None , //two sided 
 
 				alpha_mode, 
 
