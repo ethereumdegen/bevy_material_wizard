@@ -76,7 +76,7 @@ pub struct MaterialDefinition {
   pub metallic: Option<f32>,
 
   pub  emissive_texture: Option<String> ,
-
+  pub  emissive_color_tint: Option<LinearRgba>, 
 
 }
  

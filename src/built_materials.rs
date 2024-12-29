@@ -46,7 +46,7 @@ impl BuiltMaterialsMap {
 		}else {
 
 
-			let material_definition = material_definitions_map.get( material_name )?;
+			  let material_definition = material_definitions_map.get( material_name )?;
 
 			  let uv_scale = material_definition.uv_scale_factor; 
 
@@ -72,6 +72,22 @@ impl BuiltMaterialsMap {
  			if let Some(ref normal_texture_handle) = normal_texture_handle {
 				material_images_cache.0.insert( normal_texture_handle.id() );
 			}
+
+
+
+			let emissive_texture_handle: Option<Handle<Image>> = material_definition.emissive_texture.as_ref().map(
+				|tex| asset_server.load(
+					tex.to_string() )) ;
+
+			if let Some(ref emissive_texture_handle) = emissive_texture_handle {
+				material_images_cache.0.insert( emissive_texture_handle.id() );
+			}
+
+
+			let emissive_color_tint = material_definition
+				.emissive_color_tint.unwrap_or(LinearRgba::BLACK);
+
+
  
 		  //	info!("create new built material ");
 			let loaded_material = StandardMaterial{
@@ -88,6 +104,11 @@ impl BuiltMaterialsMap {
 				alpha_mode, 
 
 				uv_transform: Affine2::from_scale(Vec2::splat(uv_scale)) ,
+
+
+				emissive_texture: emissive_texture_handle,
+				emissive: emissive_color_tint.into(),
+
 				//fix uv stretch ?
 
 				..default() 
