@@ -35,6 +35,8 @@ pub enum MaterialAlphaMode {
     Opaque,
     AlphaBlend,
     AlphaMask(f32),
+    Add,
+    Multiply
 
 }
 
@@ -45,7 +47,10 @@ impl MaterialAlphaMode {
 
             Self::Opaque => AlphaMode::Opaque,
             Self::AlphaBlend => AlphaMode::Blend,
-            Self::AlphaMask(x) => AlphaMode::Mask(*x)
+            Self::AlphaMask(x) => AlphaMode::Mask(*x),
+            Self::Add => AlphaMode::Add,
+            Self::Multiply => AlphaMode::Multiply, 
+             
         }
 
     }

@@ -12,6 +12,7 @@ use built_materials::BuiltMaterialsMap;
 //use material_overrides::BuiltMaterialsResource;
  
 pub mod built_materials;
+pub mod registered_materials;
 
 pub mod material_definition;
 pub mod material_overrides; 

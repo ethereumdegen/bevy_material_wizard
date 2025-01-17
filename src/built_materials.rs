@@ -9,6 +9,9 @@ use bevy::utils::HashMap;
 
 use crate::material_definition::MaterialDefinition;
 
+ 
+
+
 use bevy::image::{ImageSamplerDescriptor, ImageSampler  };
 use bevy::render::render_resource::{
     AddressMode, FilterMode,
@@ -22,6 +25,9 @@ pub struct BuiltMaterialsMap {
     pub built_materials: HashMap<String,Handle<StandardMaterial>>,
 
 }
+
+
+
 #[derive(  Resource,   Clone, Default )]
 pub struct MaterialImageHandlesCache(pub HashSet<AssetId<Image>>);
 
