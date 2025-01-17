@@ -26,7 +26,7 @@ pub fn material_overrides_plugin(app: &mut App) {
 
     	
       	.register_type::<MaterialOverrideComponent>()
-
+      	.add_event::<MaterialOverrideCompleted>()
       
       
 
@@ -50,7 +50,10 @@ pub struct MaterialOverrideComponent {
 }
 
 #[derive(Component,Debug)]
-pub struct RefreshMaterialOverride ;
+pub struct RefreshMaterialOverride ;  //change me into a command !? 
+
+#[derive(Event)]
+pub struct MaterialOverrideCompleted; // used as a trigger 
 
 
 #[derive(Component,Debug)]
@@ -66,6 +69,8 @@ pub struct MaterialOverridesSet;
 
  
 
+
+// turn this into a command !? 
 
 fn handle_material_overrides(
 	mut commands:Commands, 
@@ -119,6 +124,8 @@ fn handle_material_overrides(
 	             		 	 		  
 					                  commands.entity(mat_override_entity).try_insert( MeshMaterial3d( new_material_handle.clone() )) ;
 					                  	//  info!("inserted new material as override");
+
+					                   commands.trigger_targets(MaterialOverrideCompleted, mat_override_entity.clone());
                 				  
 	             		 	 	} 
  
@@ -130,7 +137,8 @@ fn handle_material_overrides(
 
 	             		 	 		
 	             		 	 		   commands.entity(child).try_insert( MeshMaterial3d( new_material_handle.clone() ) );
-					                  
+					                  	
+					                  	 commands.trigger_targets(MaterialOverrideCompleted, child.clone());
  									//  info!("inserted new material as override");
 
 	             		 	 		} 
@@ -150,7 +158,7 @@ fn handle_material_overrides(
 					                    .entity(mat_override_entity)
 					                    .try_insert( MeshMaterial3d ( warning_material.clone() )) ; 
 
-					                  
+					                 
 	             		 	 	} 
  
 
