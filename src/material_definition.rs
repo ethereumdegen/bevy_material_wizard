@@ -3,7 +3,7 @@
 use crate::util::walk_dir;
 use std::io::Read;
 use std::fs::File;
-use bevy::utils::HashMap;
+use bevy::utils::{HashMap,HashSet};
 use bevy::prelude::*;
 
 use serde::Deserialize;
@@ -68,8 +68,8 @@ pub struct MaterialDefinition {
    #[serde(default)]
    pub alpha_mode: MaterialAlphaMode,
 
-
-
+    #[serde(default)]
+    pub custom_props: HashSet<String>,
    //pub shader_type: Option<MaterialShaderType>
     
    

@@ -49,11 +49,19 @@ pub struct MaterialOverrideComponent {
 	pub material_override: String
 }
 
+/*
 #[derive(Component,Debug)]
 pub struct RefreshMaterialOverride ;  //change me into a command !? 
+*/
+
+
+// not impl yet 
+//#[derive(Event)]
+//pub struct PerformMaterialOverride(String); // used as a trigger 
+
 
 #[derive(Event)]
-pub struct MaterialOverrideCompleted; // used as a trigger 
+pub struct MaterialOverrideCompleted(pub String); // used as a trigger 
 
 
 #[derive(Component,Debug)]
@@ -76,7 +84,7 @@ fn handle_material_overrides(
 	mut commands:Commands, 
  
 	material_override_query: Query<(Entity, &MaterialOverrideComponent), 
-	Or<( Changed<MaterialOverrideComponent> , Added<RefreshMaterialOverride>) > >,
+	  Changed<MaterialOverrideComponent>    >,
 
 	 
 	children_query: Query<&Children>,
@@ -125,7 +133,7 @@ fn handle_material_overrides(
 					                  commands.entity(mat_override_entity).try_insert( MeshMaterial3d( new_material_handle.clone() )) ;
 					                  	//  info!("inserted new material as override");
 
-					                   commands.trigger_targets(MaterialOverrideCompleted, mat_override_entity.clone());
+					                   commands.trigger_targets(MaterialOverrideCompleted(material_name.clone()), mat_override_entity.clone());
                 				  
 	             		 	 	} 
  
@@ -138,7 +146,7 @@ fn handle_material_overrides(
 	             		 	 		
 	             		 	 		   commands.entity(child).try_insert( MeshMaterial3d( new_material_handle.clone() ) );
 					                  	
-					                  	 commands.trigger_targets(MaterialOverrideCompleted, child.clone());
+					                  	 commands.trigger_targets(MaterialOverrideCompleted(material_name.clone()), child.clone());
  									//  info!("inserted new material as override");
 
 	             		 	 		} 
