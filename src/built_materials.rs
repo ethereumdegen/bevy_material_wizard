@@ -58,7 +58,7 @@ impl BuiltMaterialsMap {
 
 			  let alpha_mode = material_definition.alpha_mode.to_alpha_mode();
 
-			  let base_color = material_definition.diffuse_color_tint.unwrap_or(LinearRgba::WHITE);
+			  let base_color = material_definition.diffuse_color_tint.unwrap_or(LinearRgba::WHITE.into() );
 
 			 
 			//bevy is bugged so this doesnt work ! 
@@ -91,7 +91,7 @@ impl BuiltMaterialsMap {
 
 
 			let emissive_color_tint = material_definition
-				.emissive_color_tint.unwrap_or(LinearRgba::BLACK);
+				.emissive_color_tint.unwrap_or(LinearRgba::BLACK.into());
 
 
  

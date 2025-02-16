@@ -63,7 +63,7 @@ pub struct MaterialDefinition {
    
    pub material_name: String , 
    pub uv_scale_factor: f32, 
-   pub diffuse_color_tint: Option<LinearRgba>, 
+   pub diffuse_color_tint: Option<Color>, 
 
    #[serde(default)]
    pub alpha_mode: MaterialAlphaMode,
@@ -81,7 +81,7 @@ pub struct MaterialDefinition {
   pub metallic: Option<f32>,
 
   pub  emissive_texture: Option<String> ,
-  pub  emissive_color_tint: Option<LinearRgba>, 
+  pub  emissive_color_tint: Option<Color>, 
 
 }
  

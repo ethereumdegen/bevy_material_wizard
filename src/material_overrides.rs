@@ -26,6 +26,8 @@ pub fn material_overrides_plugin(app: &mut App) {
 
     	
       	.register_type::<MaterialOverrideComponent>()
+      	 	.register_type::<MaterialOverrideWhenSceneReadyComponent>()
+      	
       	.add_event::<MaterialOverrideCompleted>()
       
       
@@ -64,7 +66,8 @@ pub struct RefreshMaterialOverride ;  //change me into a command !?
 pub struct MaterialOverrideCompleted(pub String); // used as a trigger 
 
 
-#[derive(Component,Debug)]
+#[derive(Component,Debug,Reflect)]
+#[reflect(Component)]
 pub struct MaterialOverrideWhenSceneReadyComponent {
  
 	pub material_override: String
