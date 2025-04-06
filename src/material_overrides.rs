@@ -4,17 +4,20 @@
 /* use crate::{
 	advanced_materials::foliage_material::FoliageMaterialExtension,
 	 materials_config::MaterialTypesConfig}; */
+use bevy::ecs::relationship::Relationship;
 use crate::MaterialImageHandlesCache;
 use crate::{built_materials::BuiltMaterialsMap, material_definition::MaterialDefinitionsMap};
  
 use bevy::prelude::*;
-use bevy::utils::HashMap;
+ 
 
 //use crate::loading::EditorLoadingState;  
 use bevy::scene::SceneInstanceReady; 
 
 use serde:: {Serialize,Deserialize};
 
+use  bevy::platform_support::collections::hash_map::HashMap;
+use  bevy::platform_support::collections::hash_set::HashSet;
 
 /*
 
@@ -210,9 +213,9 @@ fn handle_material_overrides_when_scene_ready(
 
     mut commands: Commands,
 
-    parent_query: Query<&Parent>,
+    parent_query: Query<&ChildOf>,
 ) {
-    let trig_entity = scene_instance_evt_trigger.entity();
+    let trig_entity = scene_instance_evt_trigger.target();
 
     let Some(parent_entity) = parent_query.get(trig_entity).ok().map(|p| p.get()) else {
         return;
@@ -225,7 +228,7 @@ fn handle_material_overrides_when_scene_ready(
 
     let material_override = mat_override_request.material_override.clone();
 
-    if let Some(mut cmd) = commands.get_entity(trig_entity) {
+    if let Some(mut cmd) = commands.get_entity(trig_entity) .ok()  {
         cmd.try_insert(MaterialOverrideComponent { material_override });
     }
 }

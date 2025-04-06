@@ -2,13 +2,15 @@
 
 use std::io::Read;
 use std::fs::File;
-use bevy::utils::HashMap;
+ 
 use bevy::prelude::*;
 
 use serde::Deserialize;
 
 use serde::Serialize;
 
+use  bevy::platform_support::collections::hash_map::HashMap;
+use  bevy::platform_support::collections::hash_set::HashSet;
 
 /*
 

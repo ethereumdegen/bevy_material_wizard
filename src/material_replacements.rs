@@ -1,5 +1,6 @@
 
  
+use bevy::ecs::relationship::Relationship;
 use crate::material_overrides::MaterialOverridesSet;
 
 
@@ -14,13 +15,15 @@ use crate::material_overrides::{MaterialOverrideComponent };
 //use crate::{advanced_materials::foliage_material::FoliageMaterialExtension, materials_config::MaterialTypesConfig};
 // use bevy::math::Affine2;
 use bevy::prelude::*;
-use bevy::utils::HashMap;
+ 
 
 //use crate::loading::EditorLoadingState;  
 use bevy::scene::SceneInstanceReady; 
 
 use serde:: {Serialize,Deserialize};
 
+use  bevy::platform_support::collections::hash_map::HashMap;
+use  bevy::platform_support::collections::hash_set::HashSet;
 
 /*
 
@@ -207,10 +210,10 @@ fn handle_material_replacements_when_scene_ready(
 
     mut commands: Commands,
 
-    parent_query: Query<&Parent>,
+    parent_query: Query<&ChildOf>,
 ) {
 
-		let trig_entity = scene_instance_evt_trigger.entity();
+		let trig_entity = scene_instance_evt_trigger.target();
 
 	    let Some(parent_entity) = parent_query.get(trig_entity).ok().map(|p| p.get()) else {
 	        return;
@@ -224,7 +227,7 @@ fn handle_material_replacements_when_scene_ready(
 
  	   let material_replacements = mat_override_request.material_replacements.clone() ;
 
-		if let Some(mut cmd) = commands.get_entity( parent_entity ) {
+		if let Some(mut cmd) = commands.get_entity( parent_entity ) .ok() {
 
 			cmd.try_insert(  
 				MaterialReplacementComponent {

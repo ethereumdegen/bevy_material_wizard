@@ -1,12 +1,10 @@
 
 use bevy::{math::Affine2, };
-
-use bevy::utils::HashSet;
+ 
 
 use bevy::prelude::*;
-
-use bevy::utils::HashMap;
-
+use  bevy::platform_support::collections::hash_map::HashMap;
+use  bevy::platform_support::collections::hash_set::HashSet;
 use crate::material_definition::MaterialDefinition;
 
  
