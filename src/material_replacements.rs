@@ -1,6 +1,6 @@
 
  
-use bevy::ecs::relationship::Relationship;
+use bevy::ecs::relationship::{DescendantIter, Relationship};
 use crate::material_overrides::MaterialOverridesSet;
 
 
@@ -112,7 +112,7 @@ fn handle_material_replacements(
 
           for (mat_override_entity, mat_replacement_request) in  material_override_query.iter(){
 
-                	  
+                	  	
 
 	             		 	 for child in DescendantIter::new(&children_query, mat_override_entity) {
 

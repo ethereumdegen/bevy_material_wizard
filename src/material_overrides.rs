@@ -4,7 +4,8 @@
 /* use crate::{
 	advanced_materials::foliage_material::FoliageMaterialExtension,
 	 materials_config::MaterialTypesConfig}; */
-use bevy::ecs::relationship::Relationship;
+
+use bevy::ecs::relationship::{DescendantIter, Relationship};
 use crate::MaterialImageHandlesCache;
 use crate::{built_materials::BuiltMaterialsMap, material_definition::MaterialDefinitionsMap};
  
