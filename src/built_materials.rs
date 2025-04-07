@@ -42,6 +42,8 @@ impl BuiltMaterialsMap {
 		asset_server: &mut AssetServer,
 		material_assets: &mut Assets<StandardMaterial> ,
 
+		image_assets: &Assets<Image >
+
 		) -> Option< Handle<StandardMaterial> > {
 
 		if let Some(existing_loaded_mat_handle) = self.built_materials.get( material_name  ) {
@@ -55,6 +57,7 @@ impl BuiltMaterialsMap {
 			  let material_definition = material_definitions_map.get( material_name )?;
 
 			  let uv_scale = material_definition.uv_scale_factor; 
+			  let uv_subset_dimensions = &material_definition.texture_subset_dimensions ;
 
 			  let alpha_mode = material_definition.alpha_mode.to_alpha_mode();
 
@@ -94,6 +97,39 @@ impl BuiltMaterialsMap {
 				.emissive_color_tint.unwrap_or(LinearRgba::BLACK.into());
 
 
+
+
+			let base_color_image_size_opt =  	base_color_texture_handle.as_ref().map( |h| image_assets.get(  h ) ).flatten()
+			.map( |img|  img.texture_descriptor.size  ) ;
+		 
+			//let base_color_image_dimensions =  base_color_image_size_opt.map( |size|  IVec2::new( size.width as i32, size.height as i32  )  ).unwrap_or( IVec2::new(256,256) );
+
+
+
+				info!("uv uv_subset_dimensions {:?} ", uv_subset_dimensions);
+
+				let uv_transform = match uv_subset_dimensions {
+					Some( subset_dims ) => {
+
+						 let base_texture_dimensions = subset_dims. base_texture_dimensions;
+
+						let scale = Vec2::new(  subset_dims.dimensions .x as f32  / base_texture_dimensions.x as f32   ,  
+						 subset_dims.dimensions .y as f32  / base_texture_dimensions.y as f32  )  * Vec2::splat(uv_scale) ;
+
+						Affine2 {
+							matrix2: Mat2::from_diagonal(scale),
+
+							translation: Vec2::new(  subset_dims.offset .x as f32  / base_texture_dimensions.x as f32  ,  
+							 subset_dims.offset .y as f32  / base_texture_dimensions.y as f32   ) 
+						}
+
+						 //Affine2::from_scale(Vec2::splat(uv_scale))  
+					},
+
+					None => Affine2::from_scale(Vec2::splat(uv_scale))  
+				};
+
+				info!("uv xform {:?} ", uv_transform);
  
 		  //	info!("create new built material ");
 			let loaded_material = StandardMaterial{
@@ -109,7 +145,7 @@ impl BuiltMaterialsMap {
 
 				alpha_mode, 
 
-				uv_transform: Affine2::from_scale(Vec2::splat(uv_scale)) ,
+				uv_transform ,
 
 
 				emissive_texture: emissive_texture_handle,
@@ -138,7 +174,7 @@ impl BuiltMaterialsMap {
 }
 
 
-//when the image asset is loaded...
+//when the image asset is loaded...   
 pub fn update_image_sampler_settings(
     mut image_events: EventReader<AssetEvent<Image>>,
     mut image_assets: ResMut<Assets<Image>>,
@@ -161,7 +197,7 @@ pub fn update_image_sampler_settings(
                         address_mode_u:  AddressMode::Repeat.into(),
                         address_mode_v:  AddressMode::Repeat.into(),
                         address_mode_w:  AddressMode::Repeat.into(),
-                        mag_filter: FilterMode::Linear.into(),
+                        mag_filter: FilterMode::Nearest.into(),
                         min_filter: FilterMode::Linear.into(),
                         mipmap_filter: FilterMode::Linear.into(),
                         ..default()

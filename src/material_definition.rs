@@ -62,7 +62,11 @@ pub struct MaterialDefinition {
     
    
    pub material_name: String , 
-   pub uv_scale_factor: f32, 
+   pub uv_scale_factor: f32,  //stretch on the output  
+
+   pub texture_subset_dimensions: Option< TextureSubsetDimensions >, 
+
+
    pub diffuse_color_tint: Option<Color>, 
 
    #[serde(default)]
@@ -98,6 +102,14 @@ impl MaterialDefinition {
 
 }
 
+#[derive(  Deserialize, Serialize, Clone, Debug )]
+pub struct TextureSubsetDimensions {
+    pub offset: IVec2, 
+    pub dimensions: IVec2, 
+
+    pub base_texture_dimensions: IVec2 
+}
+
 pub fn load_material_definitions(
     mut material_definition_map: ResMut<MaterialDefinitionsMap>,
     material_load_res: Res<MaterialDefinitionsLoadResource>,
@@ -125,7 +137,9 @@ pub fn load_material_definitions(
                             .insert(mat_def.material_name.clone(), mat_def);
                     }
                     Err(err) => {
+
                         eprintln!("Failed to load material definition from {}: {}", file_path, err);
+                        //panic!( "Failed to load material definition " )
                     }
                            
                 }

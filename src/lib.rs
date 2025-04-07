@@ -38,6 +38,8 @@ impl Plugin for BevyMaterialWizardPlugin {
 
          app
 
+         
+
 
         // .init_state::<MaterialOverridesLoadingState>()
          

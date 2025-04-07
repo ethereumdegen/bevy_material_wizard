@@ -100,6 +100,8 @@ fn handle_material_overrides(
  	mut material_images_cache: ResMut< MaterialImageHandlesCache>,
  	mut material_assets: ResMut<Assets<StandardMaterial>>,
 	mut built_materials_resource: ResMut <BuiltMaterialsMap> ,
+
+    image_assets: Res<Assets<Image>>,
 ){
 
 
@@ -122,7 +124,9 @@ fn handle_material_overrides(
              	     	material_definitions_map,
              	     	&mut material_images_cache, 
              	     	&mut asset_server, 
-             	     	&mut material_assets
+             	     	&mut material_assets,
+
+             	     	&image_assets
 
              	     );
 
