@@ -18,8 +18,7 @@ use bevy::utils::HashMap;
 
 //use crate::loading::EditorLoadingState;  
 use bevy::scene::SceneInstanceReady; 
-
-use serde:: {Serialize,Deserialize};
+ 
 
 
 /*
@@ -123,7 +122,11 @@ fn handle_material_replacements(
 
   									if &material_metadata_comp.0 ==  original_mat_name {
 
-  										commands.entity(child).try_insert( MaterialOverrideComponent  {material_override: new_mat_name.clone() }   );
+  										commands.entity(child).try_insert( MaterialOverrideComponent  {
+  											material_override: new_mat_name.clone() ,
+  											cascade : false  
+
+  										}   );
 
   									}
 
