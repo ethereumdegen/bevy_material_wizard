@@ -4,6 +4,7 @@ use std::path::Path;
 
 use std::fs;
 
+/*
 pub fn walk_dir(folder_path_name: &str, ext: &str, file_names_array: &mut Vec<String>) {
     let folder_path = Path::new(folder_path_name);
 
@@ -22,3 +23,4 @@ pub fn walk_dir(folder_path_name: &str, ext: &str, file_names_array: &mut Vec<St
         }
     }
 }
+*/
