@@ -33,13 +33,21 @@ impl RegisteredMaterialsMap {
 		 // Attempt to read the manifest file
         let file_content = match std::fs::read_to_string(manifest_path) {
             Ok(content) => content,
-            Err(_) => return None,
+            Err(e) => { 
+
+            	warn!("{:?}", e );
+	            return None 
+	        }
         };
         
         // Parse the RON file
         let manifest: HashMap<String, String> = match ron::from_str(&file_content) {
             Ok(parsed) => parsed,
-            Err(_) => return None,
+            Err( e ) => {
+
+            	warn!("{:?}", e );
+            	return None
+            },
         };
         
         // Process each material in the manifest
