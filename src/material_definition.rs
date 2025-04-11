@@ -139,7 +139,7 @@ pub fn load_material_definitions(
                     Err(err) => {
 
                         eprintln!("Failed to load material definition from {}: {}", file_path, err);
-                        //panic!( "Failed to load material definition " )
+                        panic!( "Failed to load material definition " )
                     }
                            
                 }

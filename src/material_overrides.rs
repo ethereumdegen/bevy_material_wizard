@@ -4,9 +4,11 @@
 /* use crate::{
 	advanced_materials::foliage_material::FoliageMaterialExtension,
 	 materials_config::MaterialTypesConfig}; */
-use crate::MaterialImageHandlesCache;
-use crate::{built_materials::BuiltMaterialsMap, material_definition::MaterialDefinitionsMap};
+//use crate::MaterialImageHandlesCache;
+//use crate::{built_materials::BuiltMaterialsMap, material_definition::MaterialDefinitionsMap};
  
+use bevy_materialize::GenericMaterial3d;
+use crate::RegisteredMaterialsMap;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
 
@@ -95,12 +97,14 @@ fn handle_material_overrides(
 	 mesh_query: Query< &Mesh3d >,
 
  	
- 	material_definitions_res: Res<MaterialDefinitionsMap>,
+ 	//material_definitions_res: Res<MaterialDefinitionsMap>,
  	mut asset_server: ResMut<AssetServer>, 
- 	mut material_images_cache: ResMut< MaterialImageHandlesCache>,
+ 	//mut material_images_cache: ResMut< MaterialImageHandlesCache>,
  	mut material_assets: ResMut<Assets<StandardMaterial>>,
-	mut built_materials_resource: ResMut <BuiltMaterialsMap> ,
 
+
+	mut built_materials_resource: ResMut <RegisteredMaterialsMap> ,
+ 
     image_assets: Res<Assets<Image>>,
 ){
 
@@ -114,19 +118,19 @@ fn handle_material_overrides(
             
              	let material_name = &mat_override_request.material_override ;
 
- 				let material_definitions_map = &material_definitions_res.material_definitions;  
+ 				// let material_definitions_map = &material_definitions_res.material_definitions;  
 
  
 
-             	     let loaded_material = built_materials_resource.find_or_load_material  (
+             	     let loaded_material = built_materials_resource.find_material  (
 
              	     	&material_name,
-             	     	material_definitions_map,
-             	     	&mut material_images_cache, 
-             	     	&mut asset_server, 
-             	     	&mut material_assets,
+             	     	//material_definitions_map,
+             	     	//&mut material_images_cache, 
+             	     	//&mut asset_server, 
+             	     	//&mut material_assets,
 
-             	     	&image_assets
+             	     	//&image_assets
 
              	     );
 
@@ -137,7 +141,7 @@ fn handle_material_overrides(
 
              		  		if   mesh_query.get(mat_override_entity).ok().is_some() {
 	             		 	 		  
-					                  commands.entity(mat_override_entity).try_insert( MeshMaterial3d( new_material_handle.clone() )) ;
+					                  commands.entity(mat_override_entity).try_insert( GenericMaterial3d( new_material_handle.clone() )) ;
 					                  	//  info!("inserted new material as override");
 
 					                   commands.trigger_targets(MaterialOverrideCompleted(material_name.clone()), mat_override_entity.clone());
@@ -151,7 +155,7 @@ fn handle_material_overrides(
 	 								if   mesh_query.get(child).ok().is_some() {
 
 	             		 	 		
-	             		 	 		   commands.entity(child).try_insert( MeshMaterial3d( new_material_handle.clone() ) );
+	             		 	 		   commands.entity(child).try_insert( GenericMaterial3d( new_material_handle.clone() ) );
 					                  	
 					                  	 commands.trigger_targets(MaterialOverrideCompleted(material_name.clone()), child.clone());
  									//  info!("inserted new material as override");
