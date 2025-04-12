@@ -1,5 +1,7 @@
  
  
+use bevy::asset::UntypedAssetId;
+use bevy_materialize::GenericMaterials;
 use bevy_materialize::GenericMaterial3d;
 use crate::RegisteredMaterialsMap;
 use bevy::prelude::*;
@@ -29,7 +31,7 @@ pub fn material_overrides_plugin(app: &mut App) {
 
        .add_systems(Update, (
       
-       	handle_material_overrides
+           	handle_material_overrides
        	).chain() .in_set(MaterialOverridesSet) )
 
    
@@ -61,7 +63,7 @@ pub struct RefreshMaterialOverride ;  //change me into a command !?
 
 
 #[derive(Event)]
-pub struct MaterialOverrideCompleted(pub String); // used as a trigger 
+pub struct MaterialOverrideCompleted( pub UntypedAssetId, pub String); // used as a trigger 
 
 
 #[derive(Component,Debug,Reflect)]
@@ -95,13 +97,19 @@ fn handle_material_overrides(
 
  	
  	//material_definitions_res: Res<MaterialDefinitionsMap>,
- 	mut asset_server: ResMut<AssetServer>, 
+ 	  // asset_server: ResMut<AssetServer>, 
  	//mut material_images_cache: ResMut< MaterialImageHandlesCache>,
+
+
  	mut material_assets: ResMut<Assets<StandardMaterial>>,
 
 
 	  built_materials_resource: Res  <RegisteredMaterialsMap> ,
- 
+ 	
+
+ 	//  generic_materials_ext: GenericMaterials, 
+
+
     //image_assets: Res<Assets<Image>>,
 ){
 
@@ -127,37 +135,44 @@ fn handle_material_overrides(
              		   
 
              		  if let Some(new_material_handle) = loaded_material {
+
+
+             		     /*  	let  generic_material_is_loaded  =  generic_materials_ext.get( new_material_handle.id() ) .is_some()  ;
+
+             		       	if !generic_material_is_loaded {
+             		       		panic!("mat is not fully loaded" );
+             		       	} */   // this isnt the issue... ugh 
  
 
              		  		if   mesh_query.get(mat_override_entity).ok().is_some() {
 	             		 	 		  
-	             		 	 		  commands.entity(mat_override_entity).remove::<MeshMaterial3d<StandardMaterial>>() ;
-					                  commands.entity(mat_override_entity).try_insert( GenericMaterial3d( new_material_handle.clone() )) ;
+	             		 	 		  commands.entity(mat_override_entity).remove::<MeshMaterial3d<StandardMaterial>>() ; // this isnt working !? 
+					                   commands.entity(mat_override_entity).try_insert( GenericMaterial3d( new_material_handle.clone() )) ;
 					                  	//  info!("inserted new material as override");
 
-					                   commands.trigger_targets(MaterialOverrideCompleted(material_name.clone()), mat_override_entity.clone());
-                				  
-	             		 	 	} 
+					                   commands.trigger_targets(MaterialOverrideCompleted(new_material_handle.id().untyped(), material_name.clone()), mat_override_entity.clone());
+	                				  	//  commands.entity(mat_override_entity).remove::<MeshMaterial3d<StandardMaterial>>() ;
+	             		 	 	} 	
  	
 	             		 	 if mat_override_request.cascade {
 	             		 	    for child in DescendantIter::new(&children_query, mat_override_entity) {
 
-	             		 	  
+	             		 	  			// BE SURE TO USE child IN HERE 
 	 								if   mesh_query.get(child).ok().is_some() {
 
-	             		 	 			  commands.entity(mat_override_entity).remove::<MeshMaterial3d<StandardMaterial>>() ;
-	             		 	 		      commands.entity(child).try_insert( GenericMaterial3d( new_material_handle.clone() ) );
+	             		 	 			  commands.entity(child).remove::<MeshMaterial3d<StandardMaterial>>() ;  // this isnt working !? 
+	             		 	 		       commands.entity(child).try_insert( GenericMaterial3d( new_material_handle.clone() ) );
 					                  	
-					                  	 commands.trigger_targets(MaterialOverrideCompleted(material_name.clone()), child.clone());
+					                  	 commands.trigger_targets(MaterialOverrideCompleted(new_material_handle.id().untyped(), material_name.clone()), child.clone());
  									//  info!("inserted new material as override");
-
+ 									 // commands.entity(mat_override_entity).remove::<MeshMaterial3d<StandardMaterial>>() ;
 	             		 	 		} 
 							     
 								 }
 								 }
 
              		  }else {
-
+             		   
              		  	  let warning_material = material_assets.add(Color::srgb(1.0, 0.0, 0.0)) ;
  
 				             warn!("inserted warning_material");
@@ -185,7 +200,7 @@ fn handle_material_overrides(
 				                 
 
              		 	 	} 						     
-						 }
+						 } 
 
 
              		  }
