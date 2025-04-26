@@ -1,10 +1,11 @@
  
 
+use bevy_materialize::prelude::GenericMaterial;
 use crate::BevyMaterialWizardConfigResource;
 use bevy::prelude::*;
 
-use bevy::utils::HashMap;
-use bevy_materialize::GenericMaterial;
+use bevy::platform::collections::hash_map::HashMap;
+ 
 
 //use crate::material_definition::MaterialDefinition;
 
