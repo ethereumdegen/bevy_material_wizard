@@ -1,8 +1,8 @@
 [package]
 name = "bevy_material_wizard"
 description = "A material replacement utility for bevy"
-version = "0.15.13" 
-edition = "2021"
+version = "0.16.0" 
+edition = "2024"
 authors = [ "ethereumdegen" ]
 license = "MIT"
  
@@ -17,7 +17,7 @@ exclude = ["assets"]
 
 [dependencies]
  
-bevy = "0.15.1"
+bevy = "0.16.0"
 serde = { version = "1.0", features = ["derive"] }
 ron = "0.8.1"
-bevy_materialize = {  version="0.4.2"    }
+bevy_materialize = {  version="0.5.1"    }
