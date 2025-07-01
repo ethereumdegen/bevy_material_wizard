@@ -215,7 +215,7 @@ fn handle_material_replacements_when_scene_ready(
 
 		let trig_entity = scene_instance_evt_trigger.target();
 
-	    let Some(parent_entity) = parent_query.get(trig_entity).ok().map(|p| p.get()) else {
+	    let Some(parent_entity) = parent_query.get(trig_entity).ok().map(|p| p.parent()) else {
 	        return;
 	    };
 
@@ -228,6 +228,8 @@ fn handle_material_replacements_when_scene_ready(
  	   let material_replacements = mat_override_request.material_replacements.clone() ;
 
 		if let Ok(mut cmd) = commands.get_entity( parent_entity ) {
+
+			println!("handle_material_replacements_when_scene_ready");
 
 			cmd.try_insert(  
 				MaterialReplacementComponent {

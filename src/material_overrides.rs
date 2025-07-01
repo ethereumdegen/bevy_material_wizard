@@ -97,21 +97,13 @@ fn handle_material_overrides(
 	 mesh_query: Query< &Mesh3d >,
 
  	
- 	//material_definitions_res: Res<MaterialDefinitionsMap>,
- 	  // asset_server: ResMut<AssetServer>, 
- 	//mut material_images_cache: ResMut< MaterialImageHandlesCache>,
-
+ 	 
 
  	mut material_assets: ResMut<Assets<StandardMaterial>>,
 
 
 	  built_materials_resource: Res  <RegisteredMaterialsMap> ,
- 	
-
- 	//  generic_materials_ext: GenericMaterials, 
-
-
-    //image_assets: Res<Assets<Image>>,
+ 	 
 ){
 
 
@@ -133,16 +125,12 @@ fn handle_material_overrides(
 
              	     );
 
-             		   
+             		   	
+						println!(" find_material 1 ");
+
 
              		  if let Some(new_material_handle) = loaded_material {
 
-
-             		     /*  	let  generic_material_is_loaded  =  generic_materials_ext.get( new_material_handle.id() ) .is_some()  ;
-
-             		       	if !generic_material_is_loaded {
-             		       		panic!("mat is not fully loaded" );
-             		       	} */   // this isnt the issue... ugh 
  
 
              		  		if   mesh_query.get(mat_override_entity).ok().is_some() {
@@ -157,6 +145,11 @@ fn handle_material_overrides(
  	
 	             		 	 if mat_override_request.cascade {
 	             		 	    for child in DescendantIter::new(&children_query, mat_override_entity) {
+
+
+
+										println!(" handle_material_overrides 2 ");
+
 
 	             		 	  			// BE SURE TO USE child IN HERE 
 	 								if   mesh_query.get(child).ok().is_some() {
@@ -230,7 +223,7 @@ fn handle_material_overrides_when_scene_ready(
 ) {
     let trig_entity = scene_instance_evt_trigger.target();
 
-    let Some(parent_entity) = parent_query.get(trig_entity).ok().map(|p| p.get()) else {
+    let Some(parent_entity) = parent_query.get(trig_entity).ok().map(|p| p.parent()) else {
         return;
     };
 
