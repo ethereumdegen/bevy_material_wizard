@@ -812,7 +812,7 @@ dependencies = [
 
 [[package]]
 name = "bevy_material_wizard"
-version = "0.16.1"
+version = "0.16.2"
 dependencies = [
  "bevy",
  "bevy_materialize",

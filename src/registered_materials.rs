@@ -27,7 +27,11 @@ impl RegisteredMaterialsMap {
 
 	}
 
-	pub fn from_manifest_path(  manifest_path: &str, asset_server:  &mut AssetServer  ) -> Option<Self> {
+	pub fn from_manifest_path( 
+     manifest_path: &str, 
+     asset_server:  &mut AssetServer,
+     wizard_config:   BevyMaterialWizardConfigResource 
+    ) -> Option<Self> {
 
 		let mut registered_materials = HashMap::new(); 
 
@@ -50,9 +54,17 @@ impl RegisteredMaterialsMap {
             	return None
             },
         };
+
+        let path_prefix = & wizard_config.material_defs_folder_prefix;   
         
         // Process each material in the manifest
         for (material_name, material_path) in manifest {
+
+
+            let material_path = format!("{}{}", path_prefix, material_path );
+
+            println!("load {}", material_path);
+
             // Create a new handle for each material
             let material_handle = asset_server.load( material_path ); // Or use your asset loading system
             
@@ -78,11 +90,12 @@ impl RegisteredMaterialsMap {
 
 	fn from_world(world: &mut World) -> Self {
 
+         let wizard_config = world.resource::<BevyMaterialWizardConfigResource>().clone() ;
+		let manifest_path = world.resource::< BevyMaterialWizardConfigResource >().material_defs_manifest_path.clone() ;
+		let mut asset_server = world.resource_mut::<AssetServer>() ;
+       
 
-		let manifest_path = world.get_resource::< BevyMaterialWizardConfigResource >().unwrap().material_defs_manifest_path.clone() ;
-		let mut asset_server = world.get_resource_mut::<AssetServer>().unwrap() ;
-
-		RegisteredMaterialsMap::from_manifest_path( &manifest_path, &mut asset_server  )  .unwrap() 
+		RegisteredMaterialsMap::from_manifest_path( &manifest_path, &mut asset_server , wizard_config )  .unwrap() 
 
 	}
 }

@@ -19,6 +19,7 @@ pub mod gltf_models;
 
 
 pub struct BevyMaterialWizardPlugin {     
+    pub material_defs_folder_prefix: Option<String>, 
     pub material_defs_manifest_path: String,
     pub material_replacements_folder_path : String ,
 }
@@ -35,14 +36,15 @@ impl Plugin for BevyMaterialWizardPlugin {
          .insert_resource( BevyMaterialWizardConfigResource {
 
             material_defs_manifest_path: self.material_defs_manifest_path.clone(),
-            material_replacements_folder_path: self.material_replacements_folder_path.clone() 
+            material_replacements_folder_path: self.material_replacements_folder_path.clone(), 
 
+            material_defs_folder_prefix: self.material_defs_folder_prefix.clone().unwrap_or("".into())
 
          })
 
- 
-         .init_resource::<  RegisteredMaterialsMap  >()
-          .init_resource::<  MaterialReplacementsMap  >()
+        .add_systems(Startup ,  init_resources ) 
+       //  .init_resource::<  RegisteredMaterialsMap  >()
+       //   .init_resource::<  MaterialReplacementsMap  >()
  
         // .add_systems(Startup, (  load_replacement_definitions).chain()) 
 
@@ -55,11 +57,20 @@ impl Plugin for BevyMaterialWizardPlugin {
     }
 } 
 
-#[derive(Resource) ]
+#[derive(Resource,Clone,Debug) ]
 pub struct BevyMaterialWizardConfigResource {
 
     pub material_defs_manifest_path: String,
     pub material_replacements_folder_path : String ,
 
+    pub material_defs_folder_prefix: String , 
+
 }
- 
+
+fn init_resources(world: &mut World) {
+    let registered_materials = RegisteredMaterialsMap::from_world(world);
+    world.insert_resource(registered_materials);
+    
+    let material_replacements = MaterialReplacementsMap::from_world(world);
+    world.insert_resource(material_replacements);
+}
