@@ -63,7 +63,7 @@ impl RegisteredMaterialsMap {
 
             let material_path = format!("{}{}", path_prefix, material_path );
 
-            println!("load {}", material_path);
+        //println!("load {}", material_path);
 
             // Create a new handle for each material
             let material_handle = asset_server.load( material_path ); // Or use your asset loading system

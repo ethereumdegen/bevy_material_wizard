@@ -126,8 +126,7 @@ fn handle_material_overrides(
              	     );
 
              		   	
-						println!(" find_material 1 ");
-
+					 
 
              		  if let Some(new_material_handle) = loaded_material {
 
@@ -147,9 +146,7 @@ fn handle_material_overrides(
 	             		 	    for child in DescendantIter::new(&children_query, mat_override_entity) {
 
 
-
-										println!(" handle_material_overrides 2 ");
-
+ 
 
 	             		 	  			// BE SURE TO USE child IN HERE 
 	 								if   mesh_query.get(child).ok().is_some() {

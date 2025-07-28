@@ -229,7 +229,7 @@ fn handle_material_replacements_when_scene_ready(
 
 		if let Ok(mut cmd) = commands.get_entity( parent_entity ) {
 
-			println!("handle_material_replacements_when_scene_ready");
+		//	println!("handle_material_replacements_when_scene_ready");
 
 			cmd.try_insert(  
 				MaterialReplacementComponent {
