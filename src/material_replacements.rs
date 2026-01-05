@@ -10,13 +10,10 @@ use crate::material_replacements_map::MaterialReplacementsMap ;
  
  
 use crate::material_overrides::{MaterialOverrideComponent };
-//use crate::materials_config::MaterialShaderType;
-//use crate::{advanced_materials::foliage_material::FoliageMaterialExtension, materials_config::MaterialTypesConfig};
-// use bevy::math::Affine2;
+ 
 use bevy::prelude::*;
 use bevy::platform::collections::hash_map::HashMap;
-
-//use crate::loading::EditorLoadingState;  
+ 
 use bevy::scene::SceneInstanceReady; 
  
 use bevy::ecs::relationship::DescendantIter;
@@ -29,12 +26,21 @@ The materials MUST finish extraction before loading in the models
 pub fn material_replacements_plugin(app: &mut App) {
     app 	
 
+    		  .register_type::<MaterialReplacementSet>()   
     		.register_type::<MaterialReplacementComponent>()
-    			.register_type::<MaterialReplacementWhenSceneReadyComponent>()
-    	.register_type::<MaterialReplacementApplySetWhenSceneReadyComponent>()
+
+
+    		// .register_type::<MaterialReplacementWhenSceneReadyComponent>()
+    	  //  .register_type::<MaterialReplacementApplySetWhenSceneReadyComponent>()
+
+    	  
+
      
     	.add_observer( handle_material_replacements_when_scene_ready )
+
     	.init_resource::< MaterialReplacementsMap >()
+
+
        .add_systems(Update, (
        		handle_material_replacement_sets ,
        
@@ -63,17 +69,17 @@ pub struct MaterialReplacementComponent {
 #[derive(Component,Debug)]
 pub struct RefreshMaterialReplacement ;
 
-
+/*
 #[derive(Component,Debug,Reflect)]
 #[reflect(Component)]
 pub struct MaterialReplacementWhenSceneReadyComponent {
  
 	pub material_replacements: HashMap<String,String>
-}
+}*/
 
 #[derive(Component,Debug,Reflect)]
 #[reflect(Component)]
-pub struct MaterialReplacementApplySetWhenSceneReadyComponent(pub String);
+pub struct MaterialReplacementSet(pub String);
 
 /*
 #[derive(Component,Debug)]
@@ -85,14 +91,11 @@ pub struct ReadyForMaterialOverride ;
 //this should just be inserting material overrides to the children ... 
 
 fn handle_material_replacements(
-	mut commands:Commands, 
-//	mut  scene_instance_evt_reader: EventReader<SceneInstanceReady>,  
+	mut commands:Commands,  
 
 	material_override_query: Query<(Entity, &MaterialReplacementComponent), 
 	  Changed<MaterialReplacementComponent> /*, Added<RefreshMaterialOverride>*/  >,
-
-	//parent_query : Query<&Parent>, 
-	// name_query: Query<&Name>,
+ 
 	children_query: Query<&Children>,
 
 	  
@@ -150,7 +153,7 @@ fn handle_material_replacements(
 fn handle_material_replacement_sets(
  
 	mut commands:Commands, 
-	material_override_request_query: Query< (Entity, &MaterialReplacementApplySetWhenSceneReadyComponent ), Added<MaterialReplacementApplySetWhenSceneReadyComponent>  >,
+	material_override_request_query: Query< (Entity, &MaterialReplacementSet ), Or<( Added<MaterialReplacementSet>, Changed<MaterialReplacementSet> )>  >,
 
 	material_replacements_config: Res<MaterialReplacementsMap> ,
 
@@ -167,16 +170,7 @@ fn handle_material_replacement_sets(
 
         let material_replacement_set =  material_replacement_sets.get( &mat_replacement_request.0  ) ;
 
-		/*if let Some(matching_set) = material_replacement_sets.get( &mat_replacement_request.0  ){
-
-			material_replacements = Some( matching_set.clone() );
-
-		}else {
-
-			warn!("could not find material replacement set {}", &mat_replacement_request.0 );
-		}*/
-
-		// info!(" handle_material_replacement_sets {} " , &mat_replacement_request.0 );
+	
 
 
 		if let Some( material_replacements ) =  material_replacement_set {
@@ -184,14 +178,14 @@ fn handle_material_replacement_sets(
 
 	 	// info!(" handle_material_replacement_sets 2 " );
 
-			commands.entity(entity).try_insert( (
-				MaterialReplacementWhenSceneReadyComponent {
-					 material_replacements: material_replacements.clone()
-				},
+			commands.entity(entity).try_insert( 
+				//MaterialReplacementComponent {
+				//	 material_replacements: material_replacements.clone()
+				//},
 				MaterialReplacementComponent {
 						 material_replacements: material_replacements.clone()
 				}
-			 ));
+			 ) ;
 
 		}else {
 			panic!("could not find mat rep {}",  &mat_replacement_request.0);
@@ -202,14 +196,12 @@ fn handle_material_replacement_sets(
 }
 
 
-
-fn handle_material_replacements_when_scene_ready(
+ //this will force handle_material_replacements  to occur ! 
+fn handle_material_replacements_when_scene_ready(  
     scene_instance_evt_trigger: Trigger<SceneInstanceReady>,
 
-    material_override_request_query: Query<&MaterialReplacementWhenSceneReadyComponent>,
-
-    mut commands: Commands,
-
+    mut material_replacement_comp_query: Query<&mut MaterialReplacementComponent>,
+ 
     parent_query: Query<&ChildOf>,
 ) {
 
@@ -220,24 +212,14 @@ fn handle_material_replacements_when_scene_ready(
 	    };
 
  	
-	 	 let Some(mat_override_request) = material_override_request_query.get(parent_entity).ok() else {
+	 	 let Some(mut mat_replacement_comp) = material_replacement_comp_query.get_mut(parent_entity).ok() else {
 	        return;
 	    }; 
 
 
- 	   let material_replacements = mat_override_request.material_replacements.clone() ;
+	    mat_replacement_comp.set_changed(); 
 
-		if let Ok(mut cmd) = commands.get_entity( parent_entity ) {
-
-		//	println!("handle_material_replacements_when_scene_ready");
-
-			cmd.try_insert(  
-				MaterialReplacementComponent {
-					material_replacements 
-				}
-			);
-		}
-
+ 
 
 
           
