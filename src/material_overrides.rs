@@ -26,7 +26,7 @@ pub fn material_overrides_plugin(app: &mut App) {
       	.register_type::<MaterialOverrideComponent>()
       	 	.register_type::<MaterialOverrideWhenSceneReadyComponent>()
       	
-      	.add_event::<MaterialOverrideCompleted>()
+      //	.add_message::<MaterialOverrideCompleted>()
       
       
 
@@ -63,9 +63,18 @@ pub struct RefreshMaterialOverride ;  //change me into a command !?
 //pub struct PerformMaterialOverride(String); // used as a trigger 
 
 
-#[derive(Event)]
-pub struct MaterialOverrideCompleted( pub UntypedAssetId, pub String); // used as a trigger 
+#[derive(EntityEvent)]
+pub struct MaterialOverrideCompleted {
 
+	#[event_target]
+	target: Entity,
+
+	asset_id: UntypedAssetId, 
+	mat_name: String 
+}
+
+
+ 
 
 #[derive(Component,Debug,Reflect)]
 #[reflect(Component)]
@@ -138,7 +147,14 @@ fn handle_material_overrides(
 					                   commands.entity(mat_override_entity).try_insert( GenericMaterial3d( new_material_handle.clone() )) ;
 					                  	//  info!("inserted new material as override");
 
-					                   commands.trigger_targets(MaterialOverrideCompleted(new_material_handle.id().untyped(), material_name.clone()), mat_override_entity.clone());
+							                   commands.trigger (MaterialOverrideCompleted{ 
+
+									                   	target: mat_override_entity.clone(), 
+									                   	asset_id: new_material_handle.id().untyped(),
+									                   	 mat_name: material_name.clone()
+							                   	  }
+
+					                   	  );
 	                				  	//  commands.entity(mat_override_entity).remove::<MeshMaterial3d<StandardMaterial>>() ;
 	             		 	 	} 	
  	
@@ -153,8 +169,16 @@ fn handle_material_overrides(
 
 	             		 	 			  commands.entity(child).remove::<MeshMaterial3d<StandardMaterial>>() ;  // this isnt working !? 
 	             		 	 		       commands.entity(child).try_insert( GenericMaterial3d( new_material_handle.clone() ) );
+
+
+	             		 	 		            commands.trigger (MaterialOverrideCompleted{ 
+
+									                   	target: mat_override_entity.clone(), 
+									                   	asset_id: new_material_handle.id().untyped(),
+									                   	 mat_name: material_name.clone()
+							                   	  } ) ; 
 					                  	
-					                  	 commands.trigger_targets(MaterialOverrideCompleted(new_material_handle.id().untyped(), material_name.clone()), child.clone());
+					                  //	 commands.trigger_targets(MaterialOverrideCompleted(new_material_handle.id().untyped(), material_name.clone()), child.clone());
  									//  info!("inserted new material as override");
  									 // commands.entity(mat_override_entity).remove::<MeshMaterial3d<StandardMaterial>>() ;
 	             		 	 		} 
@@ -210,7 +234,7 @@ fn handle_material_overrides(
 
 
 fn handle_material_overrides_when_scene_ready(
-    scene_instance_evt_trigger: Trigger<SceneInstanceReady>,
+    scene_instance_evt_trigger: On<SceneInstanceReady>,
 
     material_override_request_query: Query<&MaterialOverrideWhenSceneReadyComponent>,
 
@@ -218,7 +242,10 @@ fn handle_material_overrides_when_scene_ready(
 
     parent_query: Query<&ChildOf>,
 ) {
-    let trig_entity = scene_instance_evt_trigger.target();
+
+	let trigger_data = scene_instance_evt_trigger.event();
+
+    let trig_entity = trigger_data.entity;
 
     let Some(parent_entity) = parent_query.get(trig_entity).ok().map(|p| p.parent()) else {
         return;
