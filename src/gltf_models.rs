@@ -35,7 +35,7 @@ fn add_gltf_model_scenes_on_added(
 
             commands
                 .entity(entity)
-                .try_insert(SceneRoot(gltf_scene.clone()))
+                .try_insert(WorldAssetRoot(gltf_scene.clone()))
                 .remove::<AddGltfModelComponent>();
         }
     }
@@ -43,7 +43,7 @@ fn add_gltf_model_scenes_on_added(
 
 fn add_gltf_model_scenes_on_load(
     mut commands: Commands,
-    mut asset_ready_event: EventReader<AssetEvent<Gltf>>,
+    mut asset_ready_event: MessageReader<AssetEvent<Gltf>>,
     gltf_assets: Res<Assets<Gltf>>,
 
     entity_query: Query<(Entity, &AddGltfModelComponent)>,
@@ -63,7 +63,7 @@ fn add_gltf_model_scenes_on_load(
 
                         commands
                             .entity(entity)
-                            .try_insert(SceneRoot(gltf_scene.clone()))
+                            .try_insert(WorldAssetRoot(gltf_scene.clone()))
                             .remove::<AddGltfModelComponent>();
                     }
                 }

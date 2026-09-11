@@ -4,7 +4,6 @@ use crate::registered_materials::RegisteredMaterialsMap;
   
  
 use bevy::prelude::*;
-use bevy::platform::collections::hash_map::HashMap;
  
 pub mod registered_materials;
  

@@ -4,12 +4,10 @@ use bevy_materialize::prelude::GenericMaterial3d;
 use bevy::asset::UntypedAssetId; 
 use crate::RegisteredMaterialsMap;
 use bevy::prelude::*;
-use bevy::platform::collections::hash_map::HashMap;
 
 //use crate::loading::EditorLoadingState;  
-use bevy::scene::SceneInstanceReady; 
+use bevy::world_serialization::WorldInstanceReady;
 
-use serde:: {Serialize,Deserialize};
 
 use bevy::ecs::relationship::DescendantIter; 
 
@@ -234,7 +232,7 @@ fn handle_material_overrides(
 
 
 fn handle_material_overrides_when_scene_ready(
-    scene_instance_evt_trigger: On<SceneInstanceReady>,
+    scene_instance_evt_trigger: On<WorldInstanceReady>,
 
     material_override_request_query: Query<&MaterialOverrideWhenSceneReadyComponent>,
 

@@ -14,7 +14,7 @@ use crate::material_overrides::{MaterialOverrideComponent };
 use bevy::prelude::*;
 use bevy::platform::collections::hash_map::HashMap;
  
-use bevy::scene::SceneInstanceReady; 
+use bevy::world_serialization::WorldInstanceReady;
  
 use bevy::ecs::relationship::DescendantIter;
 
@@ -198,14 +198,14 @@ fn handle_material_replacement_sets(
 
  //this will force handle_material_replacements  to occur ! 
 fn handle_material_replacements_when_scene_ready(  
-    scene_instance_evt_trigger: Trigger<SceneInstanceReady>,
+    scene_instance_evt_trigger: On<WorldInstanceReady>,
 
     mut material_replacement_comp_query: Query<&mut MaterialReplacementComponent>,
  
     parent_query: Query<&ChildOf>,
 ) {
 
-		let trig_entity = scene_instance_evt_trigger.target();
+		let trig_entity = scene_instance_evt_trigger.event().entity;
 
 	    let Some(parent_entity) = parent_query.get(trig_entity).ok().map(|p| p.parent()) else {
 	        return;
